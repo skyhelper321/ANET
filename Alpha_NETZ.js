@@ -570,16 +570,16 @@ Imported.KDCore = true;
 
 KDCore = KDCore || {};
 
-// * Двузначные числа нельзя в версии, сравнение идёт по первой цифре поулчается (3.43 - нельзя, можно 3.4.3)
+// * 2桁の数字はバージョンに関係なく、1桁目を基準に比較されます (3.43 - нельзя, можно 3.4.3)
 //%[МЕНЯТЬ ПРИ ИЗМЕНЕНИИ]
 KDCore._fileVersion = '2.8.3';
 
-// * Методы и библиотеки данной версии
+// * 本バージョンで使用するメソッドとライブラリ
 KDCore._loader = 'loader_' + KDCore._fileVersion;
 
 KDCore[KDCore._loader] = [];
 
-// * Добавить библиотеку на загрузку
+// * ダウンロードするライブラリーを追加する
 KDCore.registerLibraryToLoad = function(lib) {
   return KDCore[KDCore._loader].push(lib);
 };
