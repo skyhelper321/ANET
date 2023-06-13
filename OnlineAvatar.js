@@ -10,6 +10,10 @@
 //=============================================================================
 
 /*:
+ * @target MZ
+ * @plugindesc Online Avatar Display
+ * @author krmbn0576
+ * 
  * @plugindesc Firebaseを使ってプレイヤーをオンライン同期します。
  * @author くらむぼん
  *
@@ -45,6 +49,30 @@
  * @desc 全プレイヤーでオンライン共有する変数の番号の終わり。両方0で共有機能そのものをオフ
  * @default 20
  *
+ * @command online
+ * @text Online command
+ * @desc Executes online command.
+ *
+ * @arg type
+ * @type combo
+ * @option from
+ * @option to
+ * @default from
+ * @text Type
+ * @desc Type of the online command.
+ *
+ * @arg variableId
+ * @type variable
+ * @default 1
+ * @text Variable ID
+ * @desc ID of the variable.
+ *
+ * @arg info
+ * @type string
+ * @default ""
+ * @text Info
+ * @desc Additional information.
+ * 
  * @help
  * 外部のBaaSであるFirebaseと連携して、MMORPGのような
  * オンラインのアバター（プレイヤーキャラ）表示に対応するプラグインです。
@@ -382,23 +410,19 @@ function Game_Avatar() {
 	};
 
 	//プラグインコマンド
-	var _Game_Interpreter_pluginCommand = Game_Interpreter.prototype.pluginCommand;
-	Game_Interpreter.prototype.pluginCommand = function(command, args) {
-		_Game_Interpreter_pluginCommand.apply(this, arguments);
-		if (command.toLowerCase() === 'online') {
-			switch (args[1].toLowerCase()) {
-				case 'from':
-					var online = this.character(0).online;
-					$gameVariables.setValue(+args[0], online && online[args[2]]);
-					break;
-				case 'to':
-					OnlineManager.sendCustomInfo(args[2], $gameVariables.value(+args[0]));
-					break;
-				default:
-					break;
-			}
+	PluginManager.registerCommand('OnlineAvatar', 'online', function(args) {
+		switch (args.type.toLowerCase()) {
+			case 'from':
+				var online = this.character(0).online;
+				$gameVariables.setValue(+args.variableId, online && online[args.info]);
+				break;
+			case 'to':
+				OnlineManager.sendCustomInfo(args.info, $gameVariables.value(+args.variableId));
+				break;
+			default:
+				break;
 		}
-	};
+	});
 
 	//スイッチ同期
 	var _Game_Switches_setValue = Game_Switches.prototype.setValue;
